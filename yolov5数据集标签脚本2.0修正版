@@ -1,0 +1,77 @@
+import os
+#长宽参数
+width = 1224.00
+height = 370.00
+
+#readline 逐行读取数据
+classes = ['Pedestrian','Car','Van','Misc','Cyclist','Truck']
+path = 'D:\AI\label_2'
+files = os.listdir(path)
+for file in files:
+    print('文件名称是：' + str(file) )
+    path_all = os.path.join(path , file)
+    #print('文件完整目录是 ：' + str(path_all))
+
+    with open(path_all , 'r+', encoding = 'UTF-8') as stream:
+        line = stream.readline()
+        while line:
+            print("读取到的字符是：" + line)
+            #拆分字符串
+            line_split = line.split()
+            frist_class = line_split[0]
+
+            if frist_class not in classes:
+                break
+            else:
+                frist_class = str(frist_class)
+
+                print('首字段: ' + str(frist_class))
+
+                area_class = line_split[4:8]
+                area_float = []
+
+            #print(line_split)
+            # if frist_class == 'DontCare':
+            #     line_split =  line_split.clear()
+            #     frist_class = 0
+            #     #line = stream.readline()
+            #     print("判断一未通过：\n" + line)
+            #     break
+            #
+            # elif frist_class == []:
+            #     line_split = line_split.clear()
+            #     frist_class = 0
+            #     #line = stream.readline()
+            #     print("判断二未通过：\n" + line)
+            #     break
+                #print('分支三:' + line)
+                #提取有用信息 ，索引 + 切片 ，
+                #把列表中所有的字符串改写为浮点数
+                for num in area_class:
+                    area_float.append(float(num))
+
+                area_class_new = [str(area_float[0]/2) , str(area_float[1]/2) , str(width) , str(height)]
+                #处理数据为 Each row is class x_center y_center width height format
+
+                #将字符串整合
+                area_class_new.insert(0 , frist_class)
+
+
+                # for ch in area_class_new:
+                new_line  = ' '.join(area_class_new)
+                #new_line.join('\n')
+
+                print('写入：' + new_line + '\n')
+
+
+                #重新打开文件并写入
+                with open(path_all, 'w', encoding='UTF-8') as write:
+                    stream.truncate(0)
+                    write.writelines(new_line)
+                    #write.close()
+
+                print('写入完成')
+                print('***********************************************************************************\n')
+                line = stream.readline()
+
+    stream.close()
