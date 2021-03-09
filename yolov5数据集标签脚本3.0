@@ -1,0 +1,78 @@
+import os
+#长宽参数
+W = 1224.00
+H = 370.00
+
+#readline 逐行读取数据
+classes = ['Pedestrian','Car','Van','Misc','Cyclist','Truck','Person_sitting','Tram']
+#kittit一共有8种类型
+path = 'D:\AI\label_3'
+path_W = 'D:\AI\\train2017'
+files = os.listdir(path)
+
+for file in files:
+    print('文件名称是：' + str(file) )
+    path_all = os.path.join(path , file)
+    path_all_W = os.path.join(path_W, file)
+    #print('文件完整目录是 ：' + str(path_all))
+
+    with open(path_all , 'r+', encoding = 'UTF-8') as stream:
+        for line in stream:
+            print("读取到的字符是：" + line)
+            #拆分字符串
+            line_split = line.split()
+            frist_class = line_split[0]
+
+            if frist_class not in classes:
+                pass
+
+            else:
+                frist_class = str(classes.index(frist_class))
+
+                print('首字段: ' + str(frist_class))
+
+                area_class = line_split[4:8]
+                area_float = []
+
+                for num in area_class:
+                    area_float.append(float(num))
+
+                X_1 = area_float[0]
+                Y_1 = area_float[1]
+                X_2 = area_float[2]
+                Y_2 = area_float[3]
+
+                Center_x = ((X_1 + X_2) / 2) / W
+                Center_y = ((Y_1 + Y_2) / 2) / H
+                width  = abs(X_2 - X_1) / W
+                height = abs(Y_2 - Y_1) / H
+
+                if width > 1:
+                    width = 1
+                if height > 1:
+                    height = 1
+
+                area_class_new = [str(Center_x) , str(Center_y) , str(width) , str(height)]
+                #处理数据为 Each row is class x_center y_center width height format
+
+                #将字符串整合
+                area_class_new.insert(0 , frist_class)
+
+                # for ch in area_class_new:
+                new_line  = ' '.join(area_class_new)
+                #new_line.join('\n')
+
+                print('写入：' + new_line + '\n')
+
+                #创建新文件并写入
+
+                with open(path_all_W, 'a+', encoding='UTF-8') as write:
+                    write.write(new_line + '\n')
+
+
+                print('写入完成')
+                print('***********************************************************************************\n')
+
+    write.close()
+
+    stream.close()
